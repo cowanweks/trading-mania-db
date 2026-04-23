@@ -1,0 +1,35 @@
+[package]
+name = "migration"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+name = "migration"
+path = "src/lib.rs"
+
+[dependencies]
+chrono = "0.4.44"
+anyhow = "1.0.102"
+thiserror = "2.0.18"
+rust_decimal = "1.41.0"
+argon2 = { version = "0.5.3", features = ["std"] }
+serde = { version = "1.0.228", features = ["derive"] }
+validator = { version = "0.20.0", features = ["derive"] }
+async-std = { version = "1", features = ["attributes", "tokio1"] }
+log = "0.4.29"
+
+[dependencies.sea-orm]
+version = "1.1.20"
+features = ["sqlx-postgres", "runtime-tokio-rustls", "macros"]
+
+[dependencies.sea-orm-migration]
+version = "1.1.0"
+features = ["runtime-tokio-rustls", "sqlx-postgres"]
+
+[dependencies.uuid]
+version = "1.20.0"
+features = ["v4", "serde"]
+
+[dev-dependencies]
+tokio = { version = "1.52.1", features = ["full"] }
