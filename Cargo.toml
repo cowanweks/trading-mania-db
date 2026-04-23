@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 
 [lib]
-name = "migration"
+name = "db"
 path = "src/lib.rs"
 
 [dependencies]
