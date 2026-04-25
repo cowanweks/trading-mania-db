@@ -25,7 +25,6 @@ async fn main() -> anyhow::Result<()> {
         middle_name: "Kanga".to_string(),
         password: "ultimate".to_string(),
         phone_no: "+254768676944".to_string(),
-        ssid: "4dghdhdhdhdhdh".to_string(),
         username: "cowanweks".to_string(),
     };
 

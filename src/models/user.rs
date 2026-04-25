@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 use anyhow::{anyhow, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, SaltString},
@@ -33,7 +31,11 @@ pub struct UserParams {
     pub date_of_birth: String,
     pub gender: String,
     pub phone_no: String,
-    pub ssid: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct BrokerParams {
+    ssid: String,
 }
 
 impl user::Model {
@@ -133,15 +135,6 @@ impl user::Model {
         .insert(&txn)
         .await?;
 
-        // Broker information
-        broker_information::ActiveModel {
-            s_sid: Set(params.ssid.clone()),
-            user_id: Set(new_user.id.clone()),
-            ..Default::default()
-        }
-        .insert(&txn)
-        .await?;
-
         txn.commit().await?;
 
         Ok(new_user)
@@ -152,18 +145,41 @@ impl user::Model {
         user_id: Uuid,
         params: UserParams,
     ) -> Result<Self> {
-        let trade = user::Entity::find()
+        let user = user::Entity::find()
             .filter(user::Column::Id.eq(user_id))
             .one(db)
             .await?;
 
-        if trade.is_none() {
-            return Err(anyhow!("The target trade does not exist"));
+        if user.is_none() {
+            return Err(anyhow!("The target user does not exist"));
         }
 
-        let old_user: user::ActiveModel = trade.unwrap().into();
+        let old_user: user::ActiveModel = user.unwrap().into();
 
         Ok(old_user.update(db).await?)
+    }
+
+    pub async fn update_broker_info(
+        db: &DatabaseConnection,
+        user_id: Uuid,
+        params: BrokerParams,
+    ) -> Result<()> {
+        let broker_info = broker_information::Entity::find()
+            .filter(broker_information::Column::UserId.eq(user_id))
+            .one(db)
+            .await?;
+
+        if broker_info.is_none() {
+            return Err(anyhow!("The target user does not exist"));
+        }
+
+        let mut old_info: broker_information::ActiveModel = broker_info.unwrap().into();
+
+        old_info.s_sid = Set(params.ssid);
+
+        old_info.update(db).await?;
+
+        Ok(())
     }
 
     pub async fn delete(&self, db: &DatabaseConnection, user_id: Uuid) -> Result<u64> {
