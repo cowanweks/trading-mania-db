@@ -50,6 +50,7 @@ impl user::Model {
     ) -> Result<Option<Self>> {
         // Query where email = identifier OR username = identifier
         let user = user::Entity::find()
+            .find_also_related(user_information::Entity)
             .filter(
                 Condition::any()
                     .add(user_information::Column::Email.eq(identifier))
@@ -58,7 +59,7 @@ impl user::Model {
             .one(db)
             .await?;
 
-        Ok(user)
+        Ok(user.map(|(user, _)| user))
     }
 
     pub async fn sign_in(db: &DatabaseConnection, params: &LoginParams) -> Result<()> {

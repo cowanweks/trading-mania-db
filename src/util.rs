@@ -1,6 +1,8 @@
+use sea_orm::{ConnectOptions, Database, DatabaseConnection};
+use sea_orm_migration::MigratorTrait;
 use std::time::Duration;
 
-use sea_orm::{ConnectOptions, Database, DatabaseConnection};
+use crate::Migrator;
 
 pub async fn connect_db(url: &str, max_connections: u32) -> anyhow::Result<DatabaseConnection> {
     let mut opt = ConnectOptions::new(url);
@@ -15,5 +17,9 @@ pub async fn connect_db(url: &str, max_connections: u32) -> anyhow::Result<Datab
         .sqlx_logging(true) // Enable SQLx logging
         .sqlx_logging_level(log::LevelFilter::Info);
 
-    Ok(Database::connect(opt).await?)
+    let conn = Database::connect(opt).await?;
+
+    Migrator::up(&conn, None).await?;
+
+    Ok(conn)
 }
