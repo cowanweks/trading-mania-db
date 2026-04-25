@@ -160,4 +160,10 @@ impl user::Model {
 
         Ok(old_user.update(db).await?)
     }
+
+    pub async fn get_all(db: &DatabaseConnection) -> Result<Vec<Self>> {
+        let users = user::Entity::find().all(db).await?;
+
+        Ok(users)
+    }
 }

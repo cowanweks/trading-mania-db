@@ -1,6 +1,6 @@
 use chrono::NaiveDate;
 
-use migration::prelude::{entities::user::Model, models::user::UserParams, util::connect_db};
+use db::prelude::{entities::user::Model, models::user::UserParams, util::connect_db};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
