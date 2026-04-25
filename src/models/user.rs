@@ -161,6 +161,12 @@ impl user::Model {
         Ok(old_user.update(db).await?)
     }
 
+    pub async fn delete(db: &DatabaseConnection, user_id: Uuid) -> Result<u64> {
+        let result = user::Entity::delete_by_id(user_id).exec(db).await?;
+
+        Ok(result.rows_affected)
+    }
+
     pub async fn get_all(db: &DatabaseConnection) -> Result<Vec<Self>> {
         let users = user::Entity::find().all(db).await?;
 
