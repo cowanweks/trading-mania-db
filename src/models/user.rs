@@ -161,7 +161,7 @@ impl user::Model {
         Ok(old_user.update(db).await?)
     }
 
-    pub async fn delete(db: &DatabaseConnection, user_id: Uuid) -> Result<u64> {
+    pub async fn delete(&self, db: &DatabaseConnection, user_id: Uuid) -> Result<u64> {
         let result = user::Entity::delete_by_id(user_id).exec(db).await?;
 
         Ok(result.rows_affected)
