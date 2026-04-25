@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use anyhow::{anyhow, Result};
 use argon2::{
     password_hash::{rand_core::OsRng, SaltString},
@@ -28,7 +30,7 @@ pub struct UserParams {
     pub first_name: String,
     pub last_name: String,
     pub middle_name: String,
-    pub date_of_birth: NaiveDate,
+    pub date_of_birth: String,
     pub gender: String,
     pub phone_no: String,
     pub ssid: String,
@@ -114,6 +116,8 @@ impl user::Model {
         .insert(&txn)
         .await?;
 
+        let date_of_birth = NaiveDate::parse_from_str(&params.date_of_birth.clone(), "%d-%m-%Y");
+
         // New user information
         user_information::ActiveModel {
             user_id: Set(new_user.id),
@@ -121,7 +125,7 @@ impl user::Model {
             last_name: Set(params.last_name.clone()),
             middle_name: Set(params.middle_name.clone()),
             email: Set(params.email.clone()),
-            date_of_birth: Set(params.date_of_birth.clone()),
+            date_of_birth: Set(date_of_birth.unwrap()),
             gender: Set(params.gender.clone()),
             phone_no: Set(params.phone_no.clone()),
             ..Default::default()
