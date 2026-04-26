@@ -10,11 +10,14 @@ pub struct Model {
     pub first_name: String,
     pub middle_name: String,
     pub last_name: String,
+    #[sea_orm(unique)]
     pub phone_no: String,
+    #[sea_orm(unique)]
     pub email: String,
     pub gender: String,
     pub can_trade: bool,
     pub date_of_birth: Date,
+    #[sea_orm(unique)]
     pub user_id: Uuid,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,

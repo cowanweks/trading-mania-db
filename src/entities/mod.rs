@@ -3,7 +3,7 @@
 pub mod prelude;
 
 pub mod address;
-pub mod back_test_data;
+pub mod backtest_data;
 pub mod broker_information;
 pub mod sea_orm_active_enums;
 pub mod trade;

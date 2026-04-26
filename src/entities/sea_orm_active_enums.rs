@@ -7,7 +7,6 @@ use sea_orm::entity::prelude::*;
 pub enum TradeOutcome {
     #[sea_orm(string_value = "WIN")]
     Win,
-
     #[sea_orm(string_value = "LOSS")]
     Loss,
 }
