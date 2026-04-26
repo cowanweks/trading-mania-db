@@ -14,7 +14,7 @@ pub async fn connect_db(url: &str, max_connections: u32) -> anyhow::Result<Datab
         .acquire_timeout(Duration::from_secs(8))
         .idle_timeout(Duration::from_secs(8))
         .max_lifetime(Duration::from_secs(8))
-        .sqlx_logging(true) // Enable SQLx logging
+        .sqlx_logging(false) // Enable SQLx logging
         .sqlx_logging_level(log::LevelFilter::Info);
 
     let conn = Database::connect(opt).await?;

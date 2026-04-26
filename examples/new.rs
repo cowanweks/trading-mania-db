@@ -1,16 +1,8 @@
-use std::str::FromStr;
-
-use chrono::NaiveDate;
-
-use db::{
-    prelude::{
-        entities::user::Model,
-        models::user::{LoginParams, UserParams},
-        util::connect_db,
-    },
-    Migrator,
+use db::prelude::{
+    entities::user::Model,
+    models::user::{LoginParams, UserParams},
+    util::connect_db,
 };
-use sea_orm_migration::MigratorTrait;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
