@@ -46,6 +46,7 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
+        // 3. Create the user table
         manager
             .create_table(
                 Table::create()
@@ -71,6 +72,7 @@ impl MigrationTrait for Migration {
             )
             .await?;
 
+        // 4. Add the manage_updated_at trigger to the user table
         manager
             .get_connection()
             .execute_unprepared("SELECT manage_updated_at('\"user\"'::REGCLASS)")
@@ -80,21 +82,24 @@ impl MigrationTrait for Migration {
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        // 1. Drop the updated_at trigger from the user table
         manager
             .get_connection()
             .execute_unprepared("DROP TRIGGER IF EXISTS set_updated_at_trigger ON \"user\"")
             .await?;
 
+        // 2. Drop user table
         manager
             .drop_table(Table::drop().table(User::Table).to_owned())
             .await?;
 
-        // Drop in reverse order
+        // 3. Drop manage_updated_at trigger function
         manager
             .get_connection()
             .execute_unprepared("DROP FUNCTION IF EXISTS manage_updated_at(REGCLASS) CASCADE")
             .await?;
 
+        // 4. Drop set_updated_at trigger function
         manager
             .get_connection()
             .execute_unprepared("DROP FUNCTION IF EXISTS set_updated_at() CASCADE")
